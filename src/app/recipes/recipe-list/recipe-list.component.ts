@@ -6,7 +6,14 @@ import {Recipe} from '../recipe.model';
   templateUrl: './recipe-list.component.html',
 })
 export class RecipeListComponent implements OnInit {
-  recipes: Recipe[] = [];
+  recipes: Recipe[] = [
+    new Recipe('Test Recipe', 'A test recipe',
+      'https://assets3.thrillist.com/v1/image/2797371/size/' +
+      'tl-horizontal_main_2x.jpg'),
+    new Recipe('Test Recipe 2', 'A test recipe 2',
+      'https://assets3.thrillist.com/v1/image/2797371/size/' +
+      'tl-horizontal_main_2x.jpg')
+  ];
 
   constructor() {
   }

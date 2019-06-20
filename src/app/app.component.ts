@@ -5,5 +5,9 @@ import {Component} from '@angular/core';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
-  title = 'course-project';
+  displayPage = 'recipes';
+
+  changeDisplayPage(page: string) {
+    this.displayPage = page;
+  }
 }

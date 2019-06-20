@@ -15,11 +15,11 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
   }
 
-  recipesClicked(): void {
+  onRecipesClick(): void {
     this.displayPageEmitter.emit('recipes');
   }
 
-  shoppingListClicked(): void {
+  onShoppingListClick(): void {
     this.displayPageEmitter.emit('shopping');
   }
 

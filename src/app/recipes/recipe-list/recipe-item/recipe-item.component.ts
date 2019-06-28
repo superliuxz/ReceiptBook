@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Recipe} from '../../recipe.model';
+import {RecipeService} from '../../recipe.service';
 
 @Component({
   selector: 'app-recipe-item',
@@ -10,21 +11,14 @@ export class RecipeItemComponent implements OnInit {
   @Input('recipeItem')
   recipe: Recipe;
 
-  /*
-  void because in recipe-list.component.html, there is an ngFor loop where we
-  have access to each individual Recipe object.
-   */
-  @Output()
-  recipeSelectedEmitter = new EventEmitter<void>();
-
-  constructor() {
+  constructor(private recipeSvc: RecipeService) {
   }
 
   ngOnInit() {
   }
 
   onRecipeItemClick() {
-    this.recipeSelectedEmitter.emit();
+    this.recipeSvc.selectedRecipe.emit(this.recipe);
   }
 
 }

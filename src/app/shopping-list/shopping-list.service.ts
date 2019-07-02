@@ -1,9 +1,10 @@
 import {Ingredient} from '../shared/ingredient.model';
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ShoppingListService {
-  ingredientsChanged = new EventEmitter<void>();
+  ingredientsChanged = new Subject<void>();
 
   private ingredients = [
     new Ingredient('Chicken', 5),
@@ -17,12 +18,12 @@ export class ShoppingListService {
   addIngredient(newIngredient: Ingredient): void {
     this.ingredients.push(newIngredient);
     // Also inform the subscribers that the private list has been updated.
-    this.ingredientsChanged.emit();
+    this.ingredientsChanged.next();
   }
 
   addIngredients(newIngredients: Ingredient[]): void {
     this.ingredients.push(...newIngredients); // ES6, unpack array to a stream
     // of objects.
-    this.ingredientsChanged.emit();
+    this.ingredientsChanged.next();
   }
 }

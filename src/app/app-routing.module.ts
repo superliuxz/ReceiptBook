@@ -13,7 +13,7 @@ const appRoutes: Routes = [
     component: RecipesComponent,
     children: [
       { path: '', component: RecipeStartComponent },
-      /* 'new' must come before ':id' */
+      /* 'new' must come before ':recipeId' */
       { path: 'new', component: RecipeEditComponent },
       { path: ':recipeId', component: RecipeDetailComponent },
       { path: ':recipeId/edit', component: RecipeEditComponent },

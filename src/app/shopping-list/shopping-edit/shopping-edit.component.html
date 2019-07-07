@@ -15,7 +15,7 @@
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
           <input
-            type="text"
+            type="number"
             id="amount"
             class="form-control"
             name="amount"
@@ -30,14 +30,14 @@
             {{ editMode ? 'Update' : 'Add' }}
           </button>
           <button
-            class="btn btn-danger"
+            class="btn btn-danger btn-spacing"
             type="button"
             [disabled]="!editMode"
             (click)="onDelete()"
             *ngIf="editMode">
             Delete
           </button>
-          <button class="btn btn-primary" type="button" (click)="onClear()">
+          <button class="btn btn-primary btn-spacing" type="button" (click)="onClear()">
             Clear
           </button>
         </div>

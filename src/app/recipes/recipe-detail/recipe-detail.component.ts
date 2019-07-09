@@ -23,7 +23,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   onAddToShoppingList() {
-    this.recipeSvc.addIngredsToSL(this.recipe.ingredients);
+    this.recipeSvc.addIngredientsToShoppingList(this.recipe.ingredients);
   }
 
   onEditRecipe() {
@@ -31,7 +31,22 @@ export class RecipeDetailComponent implements OnInit {
       .navigate(['edit'], { relativeTo: this.route })
       .then((navSuccess: boolean) => {
         if (!navSuccess) {
-          console.log('failed to navigate to /recipes/_id_/edit');
+          console.log(
+            'failed to navigate to /recipes/_id_/edit after editing!'
+          );
+        }
+      });
+  }
+
+  onDeleteRecipe() {
+    this.route.params.subscribe((params: Params) => {
+      this.recipeSvc.deleteRecipe(Number(params.recipeId));
+    });
+    this.router
+      .navigate(['..'], { relativeTo: this.route })
+      .then((navSuccess: boolean) => {
+        if (!navSuccess) {
+          console.log('failed to navigate to /recipes/ after deleting!');
         }
       });
   }

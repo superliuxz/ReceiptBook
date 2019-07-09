@@ -2,9 +2,12 @@ import { Recipe } from './recipe.model';
 import { Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class RecipeService {
+  recipesChanged = new Subject<void>();
+
   private recipes: Recipe[] = [
     new Recipe(
       'Test Recipe',
@@ -32,7 +35,22 @@ export class RecipeService {
     return this.recipes.slice();
   }
 
-  addIngredsToSL(ingredients: Ingredient[]) {
+  addIngredientsToShoppingList(ingredients: Ingredient[]) {
     this.shoppingListSvc.addIngredients(ingredients);
+  }
+
+  addRecipe(recipe: Recipe): void {
+    this.recipes.push(recipe);
+    this.recipesChanged.next();
+  }
+
+  updateRecipe(index: number, recipe: Recipe): void {
+    this.recipes[index] = recipe;
+    this.recipesChanged.next();
+  }
+
+  deleteRecipe(index: number): void {
+    this.recipes.splice(index, 1);
+    this.recipesChanged.next();
   }
 }

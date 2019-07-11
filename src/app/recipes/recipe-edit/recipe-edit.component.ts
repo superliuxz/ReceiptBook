@@ -19,7 +19,9 @@ import { AppConstants } from '../../app-constants';
 })
 export class RecipeEditComponent implements OnInit {
   recipeIndex: number;
-  editMode = false;
+  editMode: boolean;
+  // Indicates the template whether to display the recipe-edit, or recipe-start.
+  validUrl: boolean;
   recipeForm: FormGroup;
 
   constructor(
@@ -30,17 +32,15 @@ export class RecipeEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      // If the recipeId is not valid, do not set recipeIndex, and editMode is
-      // false.
-      if (this.recipeSvc.isValidIndex(params.recipeId)) {
-        this.recipeIndex = params.recipeId;
-        // |recipe-edit| component can either be loaded at |/recipes/new| or
-        // |/recipes/<id>/edit|.
-        this.editMode = params.hasOwnProperty('recipeId');
+      if (params.hasOwnProperty('recipeId')) {
+        this.recipeIndex = Number(params.recipeId);
+        this.validUrl = this.recipeSvc.isValidIndex(this.recipeIndex);
+        this.editMode = true;
       } else {
+        this.validUrl = true;
         this.editMode = false;
       }
-      // Independent of the validity of |params.recipeId|, we need to initForm
+      // Independent of the validity of url, we need to initForm.
       // because in the html, we have the binding [formGroup]="recipeForm",
       // where recipeForm MUST be initialized.
       this.initForm();
@@ -54,7 +54,7 @@ export class RecipeEditComponent implements OnInit {
     const recipeIngredients = new FormArray([]);
 
     // We are editing existing recipe.
-    if (this.editMode) {
+    if (this.editMode && this.validUrl) {
       const recipe = this.recipeSvc.getRecipe(this.recipeIndex);
       name = recipe.name;
       imageUrl = recipe.imageUrl;

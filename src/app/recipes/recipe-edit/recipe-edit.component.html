@@ -1,4 +1,4 @@
-<div *ngIf="recipeIndex; else ELSE">
+<div *ngIf="validUrl; else ELSE">
   <div class="row">
     <div class="col-xs-12">
       <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">

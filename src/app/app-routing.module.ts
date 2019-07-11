@@ -5,6 +5,7 @@ import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
+import { RecipesResolverService } from './recipes/recipes-resolver.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/recipes', pathMatch: 'full' },
@@ -15,8 +16,18 @@ const appRoutes: Routes = [
       { path: '', component: RecipeStartComponent },
       /* 'new' must come before ':recipeId' */
       { path: 'new', component: RecipeEditComponent },
-      { path: ':recipeId', component: RecipeDetailComponent },
-      { path: ':recipeId/edit', component: RecipeEditComponent },
+      {
+        path: ':recipeId',
+        component: RecipeDetailComponent,
+        /* Add a resolver because when hitting /recipes/:id/ or
+        /recipes/:id/edit/, must make sure all recipes are loaded. */
+        resolve: [RecipesResolverService],
+      },
+      {
+        path: ':recipeId/edit',
+        component: RecipeEditComponent,
+        resolve: [RecipesResolverService],
+      },
     ],
   },
   { path: 'shopping-list', component: ShoppingListComponent },

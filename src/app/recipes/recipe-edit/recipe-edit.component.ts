@@ -30,10 +30,19 @@ export class RecipeEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      this.recipeIndex = params.recipeId;
-      // |recipe-edit| component can either be loaded at |/recipes/new| or
-      // |/recipes/<id>/edit|.
-      this.editMode = params.hasOwnProperty('recipeId');
+      // If the recipeId is not valid, do not set recipeIndex, and editMode is
+      // false.
+      if (this.recipeSvc.isValidIndex(params.recipeId)) {
+        this.recipeIndex = params.recipeId;
+        // |recipe-edit| component can either be loaded at |/recipes/new| or
+        // |/recipes/<id>/edit|.
+        this.editMode = params.hasOwnProperty('recipeId');
+      } else {
+        this.editMode = false;
+      }
+      // Independent of the validity of |params.recipeId|, we need to initForm
+      // because in the html, we have the binding [formGroup]="recipeForm",
+      // where recipeForm MUST be initialized.
       this.initForm();
     });
   }

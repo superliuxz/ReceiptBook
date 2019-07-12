@@ -4,9 +4,11 @@ import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Subject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class RecipeService {
-  recipesChanged = new Subject<void>();
+  recipesChanged = new Subject<Recipe[]>();
 
   // private recipes: Recipe[] = [
   //   new Recipe(
@@ -42,22 +44,22 @@ export class RecipeService {
 
   addRecipe(recipe: Recipe): void {
     this.recipes.push(recipe);
-    this.recipesChanged.next();
+    this.recipesChanged.next(this.getRecipes());
   }
 
   updateRecipe(index: number, recipe: Recipe): void {
     this.recipes[index] = recipe;
-    this.recipesChanged.next();
+    this.recipesChanged.next(this.getRecipes());
   }
 
   deleteRecipe(index: number): void {
     this.recipes.splice(index, 1);
-    this.recipesChanged.next();
+    this.recipesChanged.next(this.getRecipes());
   }
 
   setRecipes(recipes: Recipe[]): void {
     this.recipes = recipes;
-    this.recipesChanged.next();
+    this.recipesChanged.next(this.getRecipes());
   }
 
   isValidIndex(index: number): boolean {

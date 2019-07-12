@@ -6,11 +6,14 @@ import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.com
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipesResolverService } from './recipes/recipes-resolver.service';
+import { AuthComponent } from './auth/auth.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/recipes', pathMatch: 'full' },
   {
     path: 'recipes',
+    canActivate: [AuthGuard],
     component: RecipesComponent,
     children: [
       { path: '', component: RecipeStartComponent },
@@ -19,8 +22,8 @@ const appRoutes: Routes = [
       {
         path: ':recipeId',
         component: RecipeDetailComponent,
-        /* Add a resolver because when hitting /recipes/:id/ or
-        /recipes/:id/edit/, must make sure all recipes are loaded. */
+        /* Add a resolver because when hitting /recipes/:localId/ or
+        /recipes/:localId/edit/, must make sure all recipes are loaded. */
         resolve: [RecipesResolverService],
       },
       {
@@ -30,7 +33,12 @@ const appRoutes: Routes = [
       },
     ],
   },
-  { path: 'shopping-list', component: ShoppingListComponent },
+  {
+    path: 'shopping-list',
+    canActivate: [AuthGuard],
+    component: ShoppingListComponent,
+  },
+  { path: 'auth', component: AuthComponent },
   { path: '**', redirectTo: '/recipes' },
 ];
 

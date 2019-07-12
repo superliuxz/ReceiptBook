@@ -66,16 +66,14 @@ export class AuthComponent implements OnInit {
         this.authForm.value.password
       );
     }
-    const sub = authObservable.subscribe(
+    authObservable.subscribe(
       respData => {
         this.loading = false;
         this.router.navigate(['/recipes']);
-        sub.unsubscribe();
       },
       errorMsg => {
         this.error = errorMsg;
         this.loading = false;
-        sub.unsubscribe();
       }
     );
     this.authForm.reset();

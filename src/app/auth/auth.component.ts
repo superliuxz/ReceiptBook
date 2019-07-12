@@ -49,8 +49,6 @@ export class AuthComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.authForm);
-
     if (this.authForm.invalid) {
       return;
     }
@@ -70,7 +68,6 @@ export class AuthComponent implements OnInit {
     }
     authObservable.subscribe(
       respData => {
-        console.log(respData);
         this.loading = false;
         this.router.navigate(['/recipes']);
       },

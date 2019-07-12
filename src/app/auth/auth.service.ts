@@ -87,11 +87,6 @@ export class AuthService {
   }
 
   signUp(email: string, password: string): Observable<AuthResponsePayload> {
-    console.log(
-      AppConstants.firebaseEmailPasswordEndpoint +
-        'verifyPassword?key=' +
-        AppConstants.firebaseApiKey
-    );
     return this.http
       .post<AuthResponsePayload>(
         AppConstants.firebaseEmailPasswordEndpoint +
@@ -122,7 +117,6 @@ export class AuthService {
   }
 
   private handleError(errorResp: HttpErrorResponse) {
-    console.log(HttpErrorResponse);
     let errMsg = 'An unknown error occurred!';
     if (!errorResp.error || !errorResp.error.error) {
       return throwError(errMsg);

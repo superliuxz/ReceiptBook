@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthResponsePayload, AuthService } from './auth.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder.directive';
 
 @Component({
   selector: 'app-auth',
@@ -16,13 +24,24 @@ import { Router } from '@angular/router';
     `,
   ],
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   loginMode = true;
   loading = false;
   error: string;
   authForm: FormGroup;
 
-  constructor(private authSvc: AuthService, private router: Router) {}
+  // Go into the template html, and find the first occurrence of
+  // PlaceholderDirective in the DOM.
+  @ViewChild(PlaceholderDirective, { static: false })
+  alertHost: PlaceholderDirective;
+
+  private dismissSubscription: Subscription;
+
+  constructor(
+    private authSvc: AuthService,
+    private router: Router,
+    private compFactoryResolver: ComponentFactoryResolver
+  ) {}
 
   ngOnInit(): void {
     this.authForm = new FormGroup({
@@ -32,6 +51,12 @@ export class AuthComponent implements OnInit {
         Validators.minLength(6),
       ]),
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.dismissSubscription) {
+      this.dismissSubscription.unsubscribe();
+    }
   }
 
   isValid(controlName: string): boolean {
@@ -74,8 +99,27 @@ export class AuthComponent implements OnInit {
       errorMsg => {
         this.error = errorMsg;
         this.loading = false;
+        this.showErrorAlert(errorMsg);
       }
     );
     this.authForm.reset();
+  }
+
+  private showErrorAlert(errorMsg: string) {
+    const alertCompFactory = this.compFactoryResolver.resolveComponentFactory(
+      AlertComponent
+    );
+    this.alertHost.viewContainerRef.clear();
+    const alertComponent = this.alertHost.viewContainerRef.createComponent(
+      alertCompFactory
+    );
+    alertComponent.instance.alertMessage = errorMsg;
+    this.dismissSubscription = alertComponent.instance.dismissed.subscribe(
+      () => {
+        this.error = null;
+        this.alertHost.viewContainerRef.clear();
+        this.dismissSubscription.unsubscribe();
+      }
+    );
   }
 }

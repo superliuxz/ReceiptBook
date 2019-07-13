@@ -19,9 +19,13 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { AlertComponent } from './shared/alert/alert.component';
+import { PlaceholderDirective } from './shared/placeholder.directive';
+import { Alert } from 'selenium-webdriver';
 
 @NgModule({
   declarations: [
+    AlertComponent,
     AppComponent,
     AuthComponent,
     DropdownDirective,
@@ -31,6 +35,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     RecipeListComponent,
     RecipeDetailComponent,
     RecipeItemComponent,
+    PlaceholderDirective,
     ShoppingListComponent,
     ShoppingEditComponent,
     RecipeStartComponent,
@@ -51,5 +56,8 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     },
   ],
   bootstrap: [AppComponent],
+  // Array of components that needs to be created but not in Router or without a
+  // selector.
+  entryComponents: [AlertComponent],
 })
 export class AppModule {}

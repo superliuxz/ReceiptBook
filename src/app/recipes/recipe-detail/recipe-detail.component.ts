@@ -18,7 +18,14 @@ export class RecipeDetailComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      this.recipe = this.recipeSvc.getRecipe(Number(params.recipeId));
+      const id = Number(params.recipeId);
+      this.recipe = this.recipeSvc.getRecipe(id);
+      if (!this.recipe) {
+        const url = this.router.url;
+        this.router.navigate(['/recipe']).then(navSuccess => {
+          console.log('Invalid URL: ' + url);
+        });
+      }
     });
   }
 

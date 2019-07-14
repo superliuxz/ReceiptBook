@@ -4,6 +4,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RecipeService } from '../recipe.service';
 import { Ingredient } from '../../shared/ingredient.model';
 import { AppConstants } from '../../app-constants';
+import { Recipe } from '../recipe.model';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -20,8 +21,6 @@ import { AppConstants } from '../../app-constants';
 export class RecipeEditComponent implements OnInit {
   recipeIndex: number;
   editMode: boolean;
-  // Indicates the template whether to display the recipe-edit, or recipe-start.
-  validUrl: boolean;
   recipeForm: FormGroup;
 
   constructor(
@@ -32,18 +31,25 @@ export class RecipeEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
+      let recipe: Recipe;
       if (params.hasOwnProperty('recipeId')) {
         this.recipeIndex = Number(params.recipeId);
-        this.validUrl = this.recipeSvc.isValidIndex(this.recipeIndex);
+        recipe = this.recipeSvc.getRecipe(this.recipeIndex);
         this.editMode = true;
       } else {
-        this.validUrl = true;
         this.editMode = false;
       }
       // Independent of the validity of url, we need to initForm.
       // because in the html, we have the binding [formGroup]="recipeForm",
       // where recipeForm MUST be initialized.
       this.initForm();
+
+      if (!recipe) {
+        const url = this.router.url;
+        this.router.navigate(['/recipes']).then(navSuccess => {
+          console.log('Invalid URL: ' + url);
+        });
+      }
     });
   }
 
@@ -53,9 +59,9 @@ export class RecipeEditComponent implements OnInit {
     let description = '';
     const recipeIngredients = new FormArray([]);
 
+    const recipe = this.recipeSvc.getRecipe(this.recipeIndex);
     // We are editing existing recipe.
-    if (this.editMode && this.validUrl) {
-      const recipe = this.recipeSvc.getRecipe(this.recipeIndex);
+    if (this.editMode && recipe) {
       name = recipe.name;
       imageUrl = recipe.imageUrl;
       description = recipe.description;

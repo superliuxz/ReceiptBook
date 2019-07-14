@@ -1,4 +1,4 @@
-<div *ngIf="recipe; else ELSE">
+<div *ngIf="recipe">
   <div class="row">
     <div class="col-xs-12">
       <img [src]="recipe.imageUrl" alt="" class="img-responsive"
@@ -44,6 +44,3 @@
     </div>
   </div>
 </div>
-<ng-template #ELSE>
-  <app-recipe-start></app-recipe-start>
-</ng-template>

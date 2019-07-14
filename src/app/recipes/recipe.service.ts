@@ -61,8 +61,4 @@ export class RecipeService {
     this.recipes = recipes;
     this.recipesChanged.next(this.getRecipes());
   }
-
-  isValidIndex(index: number): boolean {
-    return index < this.recipes.length;
-  }
 }

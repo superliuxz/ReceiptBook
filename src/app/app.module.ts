@@ -1,26 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthComponent } from './auth/auth.component';
+import { AppComponent } from './app.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
-import { AlertComponent } from './shared/alert/alert.component';
+import { AuthModule } from './auth/auth.module';
+import { HeaderComponent } from './header/header.component';
 import { RecipesModule } from './recipes/recipes.module';
-import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { SharedModule } from './shared/shared.module';
+import { ShoppingListModule } from './shopping-list/shopping-list.module';
 
 @NgModule({
-  declarations: [AppComponent, AuthComponent, HeaderComponent],
+  declarations: [AppComponent, HeaderComponent],
   imports: [
     BrowserModule,
-    FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
     RecipesModule,
+    AuthModule,
     SharedModule,
     ShoppingListModule,
     // AppRoutingModule MUST come after the RecipesModule and ShoppingListModule
@@ -35,8 +32,5 @@ import { SharedModule } from './shared/shared.module';
     },
   ],
   bootstrap: [AppComponent],
-  // Array of components that needs to be created but not in Router or without a
-  // selector.
-  entryComponents: [AlertComponent],
 })
 export class AppModule {}

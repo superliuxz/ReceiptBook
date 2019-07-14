@@ -20,5 +20,8 @@ import { CommonModule } from '@angular/common';
     LoadingSpinnerComponent,
     PlaceholderDirective,
   ],
+  // Array of components that needs to be created but not in Router or without a
+  // selector.
+  entryComponents: [AlertComponent],
 })
 export class SharedModule {}

@@ -13,7 +13,7 @@ import { ShoppingListComponent } from './shopping-list.component';
     FormsModule,
     RouterModule.forChild([
       {
-        path: 'shopping-list',
+        path: '',
         canActivate: [AuthGuard],
         component: ShoppingListComponent,
       },
@@ -21,6 +21,6 @@ import { ShoppingListComponent } from './shopping-list.component';
     SharedModule,
   ],
   // Since the RouterModule here is not used in another router module, no need
-  // to export. Same for shopping-list.module.ts
+  // to export. Same for auth.module.ts
 })
 export class ShoppingListModule {}

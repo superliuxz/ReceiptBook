@@ -5,21 +5,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
-import { AuthModule } from './auth/auth.module';
 import { HeaderComponent } from './header/header.component';
-import { RecipesModule } from './recipes/recipes.module';
 import { SharedModule } from './shared/shared.module';
-import { ShoppingListModule } from './shopping-list/shopping-list.module';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
-    RecipesModule,
-    AuthModule,
     SharedModule,
-    ShoppingListModule,
     // AppRoutingModule MUST come after the RecipesModule and ShoppingListModule
     // as the ** wildcard router MUST be the last in the routers array.
     AppRoutingModule,

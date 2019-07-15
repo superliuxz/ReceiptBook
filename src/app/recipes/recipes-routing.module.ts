@@ -10,24 +10,22 @@ import { RecipesComponent } from './recipes.component';
 
 const routes = [
   {
-    path: 'recipes',
+    path: '', // Empty string becoz of lazy loading.
     canActivate: [AuthGuard],
     component: RecipesComponent,
+    /* Preload recipes when hitting /recipes or any children url. */
+    resolve: [RecipesResolverService],
     children: [
       { path: '', component: RecipeStartComponent },
       /* 'new' must come before ':recipeId' */
       { path: 'new', component: RecipeEditComponent },
       {
         path: ':recipeId',
-        component: RecipeDetailComponent,
-        /* Add a resolver because when hitting /recipes/:localId/ or
-      /recipes/:localId/edit/, must make sure all recipes are loaded. */
-        resolve: [RecipesResolverService],
+        component: RecipeDetailComponent
       },
       {
         path: ':recipeId/edit',
-        component: RecipeEditComponent,
-        resolve: [RecipesResolverService],
+        component: RecipeEditComponent
       },
     ],
   },

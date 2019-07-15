@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
+    "outDir": "./dist/recipe-book",
     "sourceMap": true,
     "declaration": false,
     "module": "esnext",

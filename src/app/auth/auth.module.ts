@@ -13,6 +13,6 @@ import { AuthComponent } from './auth.component';
     ReactiveFormsModule,
     RouterModule.forChild([{ path: '', component: AuthComponent }]),
     SharedModule,
-  ]
+  ],
 })
 export class AuthModule {}

@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
+import { AppState } from '../store/app.reducer';
 import { StartEdit } from './store/shopping-list.action';
 
 @Component({
@@ -15,7 +16,7 @@ export class ShoppingListComponent implements OnInit {
   constructor(
     /* The type is an object that has a key shoppingList, and value returned
      * from ShoppingListReducer function in shopping-list.reducer.ts. */
-    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }>
+    private store: Store<AppState>
   ) {}
 
   ngOnInit() {

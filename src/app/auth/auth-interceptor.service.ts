@@ -5,35 +5,37 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { exhaustMap, take } from 'rxjs/operators';
+
+import { AppState } from '../store/app.reducer';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthInterceptorService implements HttpInterceptor {
-  constructor(private authSvc: AuthService) {}
+  constructor(private store: Store<AppState>) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    return this.authSvc.userSubject.pipe(
+    return this.store.select('auth').pipe(
       /* from userSubject, emit 1 value which is the user of type UserModel, and
        * stops listening, as we are not building an ongoing subscription, but
        * just need one value from the stream. */
       take(1),
       /* Exhaust Observable from take(1), and add the token to the query param.
        */
-      exhaustMap(user => {
+      exhaustMap(authState => {
         // For Sign up and Login request, user is null, hence we do not attach
         // the token.
-        if (!user) {
+        if (!authState.user) {
           return next.handle(req);
         }
         return next.handle(
-          req.clone({ params: req.params.append('auth', user.token) })
+          req.clone({ params: req.params.append('auth', authState.user.token) })
         );
       })
     );

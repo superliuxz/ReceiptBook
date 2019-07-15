@@ -1,10 +1,14 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AppConstants } from '../app-constants';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+
+import { AppConstants } from '../app-constants';
+import { AppState } from '../store/app.reducer';
+import { Login, Logout } from './store/auth.actions';
 import { UserModel } from './user.model';
-import { Router } from '@angular/router';
 
 export interface AuthResponsePayload {
   kind: string;
@@ -26,14 +30,18 @@ export class AuthService {
    * authenticated.
    * See https://stackoverflow.com/questions/43348463/what-is-the-difference-between-subject-and-behaviorsubject
    */
-  userSubject = new BehaviorSubject<UserModel>(null);
+  // userSubject = new BehaviorSubject<UserModel>(null);
   tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
 
   logOut(): void {
     localStorage.removeItem(AppConstants.userKey);
-    this.userSubject.next(null);
+    this.store.dispatch(new Logout());
     this.router.navigate(['/auth']);
     // If the user click the Log Out button, also clear the timer.
     if (this.tokenExpirationTimer) {
@@ -74,7 +82,14 @@ export class AuthService {
     if (!loadedUser.token) {
       return;
     }
-    this.userSubject.next(loadedUser);
+    this.store.dispatch(
+      new Login({
+        email: user.email,
+        localId: user.localId,
+        idToken: user.idToken,
+        tokenExpirationDate: new Date(user.tokenExpirationDate),
+      })
+    );
     const tokenDurationLeft =
       new Date(user.tokenExpirationDate).getTime() - new Date().getTime();
     this.autoLogout(tokenDurationLeft);
@@ -105,13 +120,15 @@ export class AuthService {
   }
 
   private handleAuthentication(respData: AuthResponsePayload) {
-    const user = new UserModel(
-      respData.email,
-      respData.localId,
-      respData.idToken,
-      new Date(new Date().getTime() + Number(respData.expiresIn) * 1000)
-    );
-    this.userSubject.next(user);
+    const user = {
+      email: respData.email,
+      localId: respData.localId,
+      idToken: respData.idToken,
+      tokenExpirationDate: new Date(
+        new Date().getTime() + Number(respData.expiresIn) * 1000
+      ),
+    };
+    this.store.dispatch(new Login(user));
     this.autoLogout(Number(respData.expiresIn) * 1000);
     localStorage.setItem(AppConstants.userKey, JSON.stringify(user));
   }

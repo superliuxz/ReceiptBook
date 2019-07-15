@@ -9,10 +9,6 @@ import {
   UPDATE_INGREDIENT,
 } from './shopping-list.action';
 
-export interface AppState {
-  shoppingList: ShoppingListState;
-}
-
 export interface ShoppingListState {
   ingredients: Ingredient[];
   editedIngredient: Ingredient;
@@ -28,7 +24,7 @@ const initialState: ShoppingListState = {
 export function ShoppingListReducer(
   state = initialState,
   action: ShoppingListActions
-) {
+): ShoppingListState {
   switch (action.type) {
     case ADD_INGREDIENT:
       return { ...state, ingredients: [...state.ingredients, action.payload] };

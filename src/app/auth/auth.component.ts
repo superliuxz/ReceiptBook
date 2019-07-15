@@ -6,11 +6,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthResponsePayload, AuthService } from './auth.service';
-import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder.directive';
+import { AuthResponsePayload, AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',

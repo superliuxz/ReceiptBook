@@ -1,12 +1,24 @@
 import { UserModel } from '../user.model';
-import { AuthActions, LOGIN, LOGOUT } from './auth.actions';
+import {
+  AuthActions,
+  AUTHENTICATE_SUCCESS,
+  AUTHENTICATE_FAIL,
+  LOGIN_START,
+  LOGOUT,
+  SIGNUP_START,
+  DISMISS_ERROR,
+} from './auth.actions';
 
 export interface AuthState {
   user: UserModel;
+  authError: string;
+  loading: boolean;
 }
 
-const initialState = {
+const initialState: AuthState = {
   user: null,
+  authError: null,
+  loading: false,
 };
 
 export function authReducer(
@@ -14,7 +26,7 @@ export function authReducer(
   action: AuthActions
 ): AuthState {
   switch (action.type) {
-    case LOGIN:
+    case AUTHENTICATE_SUCCESS:
       return {
         ...state,
         user: new UserModel(
@@ -23,9 +35,26 @@ export function authReducer(
           action.payload.idToken,
           action.payload.tokenExpirationDate
         ),
+        authError: null,
+        loading: false,
       };
     case LOGOUT:
-      return { ...state, user: null };
+      return { ...state, user: null, authError: null };
+    case LOGIN_START:
+    case SIGNUP_START:
+      return { ...state, authError: null, loading: true };
+    case AUTHENTICATE_FAIL:
+      return {
+        ...state,
+        user: null,
+        authError: action.payload,
+        loading: false,
+      };
+    case DISMISS_ERROR:
+      return {
+        ...state,
+        authError: null,
+      };
     default:
       return state;
   }

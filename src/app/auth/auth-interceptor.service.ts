@@ -29,7 +29,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       /* Exhaust Observable from take(1), and add the token to the query param.
        */
       exhaustMap(authState => {
-        // For Sign up and Login request, user is null, hence we do not attach
+        // For Sign up and AuthenticateSuccess request, user is null, hence we do not attach
         // the token.
         if (!authState.user) {
           return next.handle(req);

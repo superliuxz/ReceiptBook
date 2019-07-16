@@ -27,12 +27,12 @@ export class AuthGuard implements CanActivate {
     | boolean
     | UrlTree {
     return this.store.select('auth').pipe(
-      /* IMPORTANT, as we don't want the guard to keep listening to the
-       * userSubject, but rather, only take one value from it, and stop
-       * listening, and move onto the |map| operator. */
+      /* IMPORTANT, as we don't want the guard to keep listening, but rather,
+       * only take one value from it, and stop listening, and move onto the
+       * |map| operator. */
       take(1),
       map(authState => {
-        return !!authState.user ? true : this.router.createUrlTree(['/auth']);
+        return authState.user ? true : this.router.createUrlTree(['/auth']);
       })
     );
   }

@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
 
+import { AuthService } from '../auth/auth.service';
+import { Logout } from '../auth/store/auth.actions';
 import { DataStorageService } from '../shared/data-storage.service';
 import { AppState } from '../store/app.reducer';
 
@@ -31,7 +32,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogOut() {
-    this.authSvc.logOut();
+    this.store.dispatch(new Logout());
   }
 
   onSaveData() {

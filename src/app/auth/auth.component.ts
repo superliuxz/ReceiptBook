@@ -6,12 +6,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder.directive';
-import { AuthResponsePayload, AuthService } from './auth.service';
+import { AppState } from '../store/app.reducer';
+import { DismissError, LoginStart, SignupStart } from './store/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -37,11 +38,11 @@ export class AuthComponent implements OnInit, OnDestroy {
   alertHost: PlaceholderDirective;
 
   private dismissSubscription: Subscription;
+  private storeSub: Subscription;
 
   constructor(
-    private authSvc: AuthService,
-    private router: Router,
-    private compFactoryResolver: ComponentFactoryResolver
+    private compFactoryResolver: ComponentFactoryResolver,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit(): void {
@@ -52,12 +53,22 @@ export class AuthComponent implements OnInit, OnDestroy {
         Validators.minLength(6),
       ]),
     });
+
+    this.storeSub = this.store.select('auth').subscribe(authState => {
+      this.loading = authState.loading;
+      this.error = authState.authError;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if (this.dismissSubscription) {
       this.dismissSubscription.unsubscribe();
     }
+    this.storeSub.unsubscribe();
+    this.authForm.reset();
   }
 
   isValid(controlName: string): boolean {
@@ -78,31 +89,15 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (this.authForm.invalid) {
       return;
     }
-
-    let authObservable: Observable<AuthResponsePayload>;
-    this.loading = true;
+    const payload = {
+      email: this.authForm.value.email,
+      password: this.authForm.value.password,
+    };
     if (this.loginMode) {
-      authObservable = this.authSvc.login(
-        this.authForm.value.email,
-        this.authForm.value.password
-      );
+      this.store.dispatch(new LoginStart(payload));
     } else {
-      authObservable = this.authSvc.signUp(
-        this.authForm.value.email,
-        this.authForm.value.password
-      );
+      this.store.dispatch(new SignupStart(payload));
     }
-    authObservable.subscribe(
-      respData => {
-        this.loading = false;
-        this.router.navigate(['/recipes']);
-      },
-      errorMsg => {
-        this.error = errorMsg;
-        this.loading = false;
-        this.showErrorAlert(errorMsg);
-      }
-    );
     this.authForm.reset();
   }
 
@@ -117,7 +112,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     alertComponent.instance.alertMessage = errorMsg;
     this.dismissSubscription = alertComponent.instance.dismissed.subscribe(
       () => {
-        this.error = null;
+        this.store.dispatch(new DismissError());
         this.alertHost.viewContainerRef.clear();
         this.dismissSubscription.unsubscribe();
       }

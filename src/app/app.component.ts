@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './auth/auth.service';
+import { Store } from '@ngrx/store';
+import { AutoLogin } from './auth/store/auth.actions';
+
+import { AppState } from './store/app.reducer';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  constructor(private authSvc: AuthService) {}
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.authSvc.autoLogin();
+    this.store.dispatch(new AutoLogin());
   }
 }

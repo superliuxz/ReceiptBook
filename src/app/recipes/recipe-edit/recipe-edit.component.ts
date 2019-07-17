@@ -9,6 +9,7 @@ import {
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { AppConstants } from '../../app-constants';
 import { Ingredient } from '../../shared/ingredient.model';
@@ -29,6 +30,7 @@ import { AddRecipe, UpdateRecipe } from '../store/recipes.actions';
 })
 export class RecipeEditComponent implements OnInit, OnDestroy {
   recipeIndex: number;
+  validIndex = true;
   editMode: boolean;
   recipeForm: FormGroup;
   private storeSub: Subscription;
@@ -44,18 +46,26 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       if (params.hasOwnProperty('recipeId')) {
         this.recipeIndex = Number(params.recipeId);
         this.editMode = true;
+        this.store
+          .select('recipes')
+          .pipe(take(1))
+          .subscribe(recipesState => {
+            if (this.recipeIndex >= recipesState.recipes.length) {
+              this.validIndex = false;
+            }
+          });
       } else {
         this.editMode = false;
       }
 
       this.initForm();
 
-      // if (!recipe) {
-      //   const url = this.router.url;
-      //   this.router.navigate(['/recipes']).then(navSuccess => {
-      //     console.log('Invalid URL: ' + url);
-      //   });
-      // }
+      if (!this.validIndex) {
+        const url = this.router.url;
+        this.router.navigate(['/recipes']).then(navSuccess => {
+          console.log('Invalid URL: ' + url);
+        });
+      }
     });
   }
 
@@ -72,7 +82,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     const recipeIngredients = new FormArray([]);
 
     // We are editing existing recipe.
-    if (this.editMode) {
+    if (this.editMode && this.validIndex) {
       this.storeSub = this.store.select('recipes').subscribe(recipesState => {
         const recipe = recipesState.recipes.find((_, idx) => {
           return idx === this.recipeIndex;

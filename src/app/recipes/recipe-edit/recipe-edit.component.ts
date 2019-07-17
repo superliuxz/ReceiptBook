@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -7,10 +6,14 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RecipeService } from '../recipe.service';
-import { Ingredient } from '../../shared/ingredient.model';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+
 import { AppConstants } from '../../app-constants';
-import { Recipe } from '../recipe.model';
+import { Ingredient } from '../../shared/ingredient.model';
+import { AppState } from '../../store/app.reducer';
+import { AddRecipe, UpdateRecipe } from '../store/recipes.actions';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -24,39 +27,42 @@ import { Recipe } from '../recipe.model';
     `,
   ],
 })
-export class RecipeEditComponent implements OnInit {
+export class RecipeEditComponent implements OnInit, OnDestroy {
   recipeIndex: number;
   editMode: boolean;
   recipeForm: FormGroup;
+  private storeSub: Subscription;
 
   constructor(
     private route: ActivatedRoute,
-    private recipeSvc: RecipeService,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      let recipe: Recipe;
       if (params.hasOwnProperty('recipeId')) {
         this.recipeIndex = Number(params.recipeId);
-        recipe = this.recipeSvc.getRecipe(this.recipeIndex);
         this.editMode = true;
       } else {
         this.editMode = false;
       }
-      // Independent of the validity of url, we need to initForm.
-      // because in the html, we have the binding [formGroup]="recipeForm",
-      // where recipeForm MUST be initialized.
+
       this.initForm();
 
-      if (!recipe) {
-        const url = this.router.url;
-        this.router.navigate(['/recipes']).then(navSuccess => {
-          console.log('Invalid URL: ' + url);
-        });
-      }
+      // if (!recipe) {
+      //   const url = this.router.url;
+      //   this.router.navigate(['/recipes']).then(navSuccess => {
+      //     console.log('Invalid URL: ' + url);
+      //   });
+      // }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.storeSub) {
+      this.storeSub.unsubscribe();
+    }
   }
 
   private initForm(): void {
@@ -65,25 +71,31 @@ export class RecipeEditComponent implements OnInit {
     let description = '';
     const recipeIngredients = new FormArray([]);
 
-    const recipe = this.recipeSvc.getRecipe(this.recipeIndex);
     // We are editing existing recipe.
-    if (this.editMode && recipe) {
-      name = recipe.name;
-      imageUrl = recipe.imageUrl;
-      description = recipe.description;
-      if (recipe.ingredients) {
-        recipe.ingredients.forEach((ingredient: Ingredient) => {
-          recipeIngredients.push(
-            new FormGroup({
-              name: new FormControl(ingredient.name, [Validators.required]),
-              amount: new FormControl(ingredient.amount, [
-                Validators.required,
-                Validators.pattern(AppConstants.amountValidator),
-              ]),
-            })
-          );
+    if (this.editMode) {
+      this.storeSub = this.store.select('recipes').subscribe(recipesState => {
+        const recipe = recipesState.recipes.find((_, idx) => {
+          return idx === this.recipeIndex;
         });
-      }
+        if (recipe) {
+          name = recipe.name;
+          imageUrl = recipe.imageUrl;
+          description = recipe.description;
+          if (recipe.ingredients) {
+            recipe.ingredients.forEach((ingredient: Ingredient) => {
+              recipeIngredients.push(
+                new FormGroup({
+                  name: new FormControl(ingredient.name, [Validators.required]),
+                  amount: new FormControl(ingredient.amount, [
+                    Validators.required,
+                    Validators.pattern(AppConstants.amountValidator),
+                  ]),
+                })
+              );
+            });
+          }
+        }
+      });
     }
     // Init the form.
     this.recipeForm = new FormGroup({
@@ -117,9 +129,14 @@ export class RecipeEditComponent implements OnInit {
     //   this.recipeForm.value.ingredients
     // );
     if (this.editMode) {
-      this.recipeSvc.updateRecipe(this.recipeIndex, this.recipeForm.value);
+      this.store.dispatch(
+        new UpdateRecipe({
+          index: this.recipeIndex,
+          newRecipe: this.recipeForm.value,
+        })
+      );
     } else {
-      this.recipeSvc.addRecipe(this.recipeForm.value);
+      this.store.dispatch(new AddRecipe(this.recipeForm.value));
     }
     this.navAway();
   }

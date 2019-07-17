@@ -116,6 +116,7 @@ export class AuthEffects {
         localId: user.localId,
         idToken: user.idToken,
         tokenExpirationDate: new Date(user.tokenExpirationDate),
+        redirect: false,
       });
     })
   );
@@ -136,17 +137,19 @@ export class AuthEffects {
   })
   authRedirect = this.actions.pipe(
     ofType(AUTHENTICATE_SUCCESS),
-    tap(() => {
+    tap((authSuccessAction: AuthenticateSuccess) => {
       // Manually run the resolver to fetch the data, such that we won't see
       // a glimpse of the authenticated auth page when the request is ongoing.
-      const recipes = this.recipesResolver.resolve(
-        this.route.snapshot,
-        this.router.routerState.snapshot
-      );
-      if (recipes instanceof Observable) {
-        recipes.subscribe();
+      // const recipes = this.recipesResolver.resolve(
+      //   this.route.snapshot,
+      //   this.router.routerState.snapshot
+      // );
+      // if (recipes instanceof Observable) {
+      //   recipes.subscribe();
+      // }
+      if (authSuccessAction.payload.redirect) {
+        this.router.navigate(['recipes']);
       }
-      this.router.navigate(['recipes']);
     })
   );
 
@@ -201,6 +204,7 @@ export class AuthEffects {
       localId: respData.localId,
       idToken: respData.idToken,
       tokenExpirationDate: newExpDate,
+      redirect: true,
     });
   }
 }

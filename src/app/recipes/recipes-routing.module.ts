@@ -13,19 +13,26 @@ const routes = [
     path: '', // Empty string becoz of lazy loading.
     canActivate: [AuthGuard],
     component: RecipesComponent,
-    /* Preload recipes when hitting /recipes or any children url. */
-    resolve: [RecipesResolverService],
     children: [
-      { path: '', component: RecipeStartComponent },
+      {
+        path: '',
+        component: RecipeStartComponent,
+      },
       /* 'new' must come before ':recipeId' */
-      { path: 'new', component: RecipeEditComponent },
+      {
+        path: 'new',
+        component: RecipeEditComponent,
+        resolve: [RecipesResolverService],
+      },
       {
         path: ':recipeId',
         component: RecipeDetailComponent,
+        resolve: [RecipesResolverService],
       },
       {
         path: ':recipeId/edit',
         component: RecipeEditComponent,
+        resolve: [RecipesResolverService],
       },
     ],
   },

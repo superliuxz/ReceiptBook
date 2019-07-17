@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from '../store/app.reducer';
+import { FetchRecipe } from './store/recipes.actions';
 
 @Component({
   selector: 'app-recipes',
   templateUrl: './recipes.component.html',
 })
 export class RecipesComponent implements OnInit {
-  constructor() {}
+  constructor(private store: Store<AppState>) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.store.dispatch(new FetchRecipe());
+  }
 }

@@ -11,26 +11,29 @@ import { map, switchMap, take } from 'rxjs/operators';
 
 import { AppState } from '../store/app.reducer';
 import { Recipe } from './recipe.model';
-import { FetchRecipe, SET_RECIPE } from './store/recipes.actions';
+import * as RecipesAction from './store/recipes.actions';
 
 @Injectable({ providedIn: 'root' })
-export class RecipesResolverService implements Resolve<Recipe[]> {
+export class RecipesResolverService implements Resolve<{ recipes: Recipe[] }> {
   constructor(private store: Store<AppState>, private actions: Actions) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<Recipe[]> | Promise<Recipe[]> | Recipe[] {
+  ):
+    | Observable<{ recipes: Recipe[] }>
+    | Promise<{ recipes: Recipe[] }>
+    | { recipes: Recipe[] } {
     return this.store.select('recipes').pipe(
       take(1),
       map(recipesState => {
-        return recipesState.recipes;
+        return { recipes: recipesState.recipes };
       }),
       switchMap(recipes => {
-        if (recipes.length === 0) {
-          this.store.dispatch(new FetchRecipe());
+        if (recipes.recipes.length === 0) {
+          this.store.dispatch(RecipesAction.fetchRecipes());
           return this.actions.pipe(
-            ofType(SET_RECIPE),
+            ofType(RecipesAction.setRecipes),
             take(1)
           );
         }

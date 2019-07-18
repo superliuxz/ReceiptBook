@@ -1,50 +1,58 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { AppConstants } from '../../app-constants';
 import { AppState } from '../../store/app.reducer';
 import { Recipe } from '../recipe.model';
-import { FETCH_RECIPE, SetRecipe, STORE_RECIPES } from './recipes.actions';
+import * as RecipesAction from './recipes.actions';
 
 @Injectable()
 export class RecipesEffects {
-  @Effect()
-  fetchRecipes = this.actions.pipe(
-    ofType(FETCH_RECIPE),
-    switchMap(() => {
-      return this.http.get<Recipe[]>(AppConstants.firebaseUrl);
-    }),
-    map(recipes => {
-      if (!recipes) {
-        return [];
-      }
-      return recipes.map(recipe => {
-        return {
-          ...recipe,
-          ingredients: recipe.ingredients ? recipe.ingredients : [],
-        };
-      });
-    }),
-    map(recipes => {
-      return new SetRecipe(recipes);
-    })
-  );
+  fetchRecipes = createEffect(() => {
+    return this.actions.pipe(
+      ofType(RecipesAction.fetchRecipes),
+      switchMap(() => {
+        return this.http.get<Recipe[]>(AppConstants.firebaseUrl);
+      }),
+      map(recipes => {
+        if (!recipes) {
+          return [];
+        }
+        return recipes.map(recipe => {
+          return {
+            ...recipe,
+            ingredients: recipe.ingredients ? recipe.ingredients : [],
+          };
+        });
+      }),
+      map(recipes => {
+        return RecipesAction.setRecipes({ recipes });
+      })
+    );
+  });
 
-  @Effect({ dispatch: false })
-  storeRecipes = this.actions.pipe(
-    ofType(STORE_RECIPES),
-    withLatestFrom(this.store.select('recipes')),
-    switchMap(
-      ([
-        storeRecipesAction,
-        recipesState /* this arg comes from withLatestFrom */,
-      ]) => {
-        return this.http.put(AppConstants.firebaseUrl, recipesState.recipes);
-      }
-    )
+  storeRecipes = createEffect(
+    () => {
+      return this.actions.pipe(
+        ofType(RecipesAction.storeRecipes),
+        withLatestFrom(this.store.select('recipes')),
+        switchMap(
+          ([
+            storeRecipesAction,
+            recipesState /* this arg comes from withLatestFrom */,
+          ]) => {
+            return this.http.put(
+              AppConstants.firebaseUrl,
+              recipesState.recipes
+            );
+          }
+        )
+      );
+    },
+    { dispatch: false }
   );
 
   constructor(

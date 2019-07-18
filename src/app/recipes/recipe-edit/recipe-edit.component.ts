@@ -14,7 +14,7 @@ import { take } from 'rxjs/operators';
 import { AppConstants } from '../../app-constants';
 import { Ingredient } from '../../shared/ingredient.model';
 import { AppState } from '../../store/app.reducer';
-import { AddRecipe, UpdateRecipe } from '../store/recipes.actions';
+import * as RecipesAction from '../store/recipes.actions';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -140,13 +140,13 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     // );
     if (this.editMode) {
       this.store.dispatch(
-        new UpdateRecipe({
+        RecipesAction.updateRecipe({
           index: this.recipeIndex,
-          newRecipe: this.recipeForm.value,
+          recipe: this.recipeForm.value,
         })
       );
     } else {
-      this.store.dispatch(new AddRecipe(this.recipeForm.value));
+      this.store.dispatch(RecipesAction.addRecipe(this.recipeForm.value));
     }
     this.navAway();
   }

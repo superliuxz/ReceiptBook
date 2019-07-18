@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder.directive';
 import { AppState } from '../store/app.reducer';
-import { DismissError, LoginStart, SignupStart } from './store/auth.actions';
+import * as AuthActions from './store/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -94,9 +94,9 @@ export class AuthComponent implements OnInit, OnDestroy {
       password: this.authForm.value.password,
     };
     if (this.loginMode) {
-      this.store.dispatch(new LoginStart(payload));
+      this.store.dispatch(AuthActions.loginStart(payload));
     } else {
-      this.store.dispatch(new SignupStart(payload));
+      this.store.dispatch(AuthActions.signupStart(payload));
     }
     this.authForm.reset();
   }
@@ -112,7 +112,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     alertComponent.instance.alertMessage = errorMsg;
     this.dismissSubscription = alertComponent.instance.dismissed.subscribe(
       () => {
-        this.store.dispatch(new DismissError());
+        this.store.dispatch(AuthActions.dismissError());
         this.alertHost.viewContainerRef.clear();
         this.dismissSubscription.unsubscribe();
       }

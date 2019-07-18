@@ -26,11 +26,9 @@ export class AuthInterceptorService implements HttpInterceptor {
        * stops listening, as we are not building an ongoing subscription, but
        * just need one value from the stream. */
       take(1),
-      /* Exhaust Observable from take(1), and add the token to the query param.
+      /* Exhaust Observable from take(1), and add the idToken to the query param.
        */
       exhaustMap(authState => {
-        // For Sign up and AuthenticateSuccess request, user is null, hence we do not attach
-        // the token.
         if (!authState.user) {
           return next.handle(req);
         }

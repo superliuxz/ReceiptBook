@@ -1,13 +1,7 @@
+import { Action, createReducer, on } from '@ngrx/store';
+
 import { UserModel } from '../user.model';
-import {
-  AuthActions,
-  AUTHENTICATE_SUCCESS,
-  AUTHENTICATE_FAIL,
-  LOGIN_START,
-  LOGOUT,
-  SIGNUP_START,
-  DISMISS_ERROR,
-} from './auth.actions';
+import * as AuthActions from './auth.actions';
 
 export interface AuthState {
   user: UserModel;
@@ -15,47 +9,37 @@ export interface AuthState {
   loading: boolean;
 }
 
-const initialState: AuthState = {
-  user: null,
-  authError: null,
-  loading: false,
-};
+const initialState: AuthState = { user: null, authError: null, loading: false };
 
 export function authReducer(
-  state: AuthState = initialState,
-  action: AuthActions
-): AuthState {
-  switch (action.type) {
-    case AUTHENTICATE_SUCCESS:
-      return {
-        ...state,
-        user: new UserModel(
-          action.payload.email,
-          action.payload.localId,
-          action.payload.idToken,
-          action.payload.tokenExpirationDate
-        ),
-        authError: null,
-        loading: false,
-      };
-    case LOGOUT:
-      return { ...state, user: null, authError: null };
-    case LOGIN_START:
-    case SIGNUP_START:
-      return { ...state, authError: null, loading: true };
-    case AUTHENTICATE_FAIL:
-      return {
-        ...state,
-        user: null,
-        authError: action.payload,
-        loading: false,
-      };
-    case DISMISS_ERROR:
-      return {
-        ...state,
-        authError: null,
-      };
-    default:
-      return state;
-  }
+  authState: AuthState | undefined,
+  authAction: Action
+) {
+  return createReducer(
+    initialState,
+    on(AuthActions.loginStart, AuthActions.signupStart, state => ({
+      ...state,
+      authError: null,
+      loading: true,
+    })),
+    on(AuthActions.authenticateSuccess, (state, action) => ({
+      ...state,
+      authError: null,
+      loading: false,
+      user: new UserModel(
+        action.email,
+        action.localId,
+        action.idToken,
+        action.tokenExpirationDate
+      ),
+    })),
+    on(AuthActions.authenticateFail, (state, action) => ({
+      ...state,
+      user: null,
+      authError: action.errorMessage,
+      loading: false,
+    })),
+    on(AuthActions.logout, state => ({ ...state, user: null })),
+    on(AuthActions.dismissError, state => ({ ...state, authError: null }))
+  )(authState, authAction);
 }

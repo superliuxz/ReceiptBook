@@ -1,3 +1,9 @@
+import {
+  animate,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -9,6 +15,15 @@ import { Recipe } from '../recipe.model';
 @Component({
   selector: 'app-recipe-list',
   templateUrl: './recipe-list.component.html',
+  animations: [
+    trigger('addRemove', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('0.2s', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [animate('0.2s', style({ opacity: 0 }))]),
+    ]),
+  ],
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
   recipes: Recipe[];

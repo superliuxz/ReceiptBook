@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
@@ -19,6 +20,7 @@ import { appReducer } from './store/app.reducer';
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     SharedModule,

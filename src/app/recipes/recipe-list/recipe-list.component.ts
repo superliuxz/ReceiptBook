@@ -32,7 +32,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.recipesSub = this.store.select('recipes').subscribe(recipesState => {
-      console.log(recipesState.recipes.length);
       this.recipes = recipesState.recipes;
     });
   }

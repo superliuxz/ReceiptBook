@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -29,7 +30,8 @@ export class AuthEffects {
     private authSvc: AuthService,
     private recipesResolver: RecipesResolverService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   authSignup = createEffect(() => {
@@ -109,7 +111,7 @@ export class AuthEffects {
           localId: user.localId,
           idToken: user.idToken,
           tokenExpirationDate: new Date(user.tokenExpirationDate),
-          redirect: false,
+          redirect: this.location.path() === '/auth',
         });
       })
     );

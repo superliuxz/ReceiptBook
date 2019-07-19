@@ -25,7 +25,7 @@ export function authReducer(
     on(AuthActions.authenticateSuccess, (state, action) => ({
       ...state,
       authError: null,
-      loading: false,
+      loading: true,
       user: new UserModel(
         action.email,
         action.localId,
@@ -33,13 +33,17 @@ export function authReducer(
         action.tokenExpirationDate
       ),
     })),
+    on(AuthActions.authenticateSuccessStopLoading, state => ({
+      ...state,
+      loading: false,
+    })),
     on(AuthActions.authenticateFail, (state, action) => ({
       ...state,
       user: null,
       authError: action.errorMessage,
       loading: false,
     })),
-    on(AuthActions.logout, state => ({ ...state, user: null })),
+    on(AuthActions.logout, state => ({ ...state, user: null, loading: false })),
     on(AuthActions.dismissError, state => ({ ...state, authError: null }))
   )(authState, authAction);
 }

@@ -18,6 +18,9 @@ export const authenticateSuccess = createAction(
     redirect: boolean;
   }>()
 );
+export const authenticateSuccessStopLoading = createAction(
+  '[Auth] AUTHENTICATE_SUCCESS_STOP_LOADING'
+);
 export const authenticateFail = createAction(
   '[Auth] AUTHENTICATE_FAIL',
   props<{ errorMessage: string }>()

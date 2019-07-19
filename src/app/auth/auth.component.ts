@@ -67,6 +67,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (this.dismissSubscription) {
       this.dismissSubscription.unsubscribe();
     }
+    this.store.dispatch(AuthActions.authenticateSuccessStopLoading());
     this.storeSub.unsubscribe();
     this.authForm.reset();
   }

@@ -19,7 +19,7 @@ import { appReducer } from './store/app.reducer';
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     SharedModule,
     StoreModule.forRoot(appReducer),

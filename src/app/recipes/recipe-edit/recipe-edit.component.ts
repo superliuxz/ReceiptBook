@@ -14,6 +14,7 @@ import { take } from 'rxjs/operators';
 import { AppConstants } from '../../app-constants';
 import { Ingredient } from '../../shared/ingredient.model';
 import { AppState } from '../../store/app.reducer';
+import { Recipe } from '../recipe.model';
 import * as RecipesAction from '../store/recipes.actions';
 
 @Component({
@@ -146,7 +147,16 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         })
       );
     } else {
-      this.store.dispatch(RecipesAction.addRecipe(this.recipeForm.value));
+      this.store.dispatch(
+        RecipesAction.addRecipe({
+          recipe: new Recipe(
+            this.recipeForm.value.name,
+            this.recipeForm.value.description,
+            this.recipeForm.value.imageUrl,
+            this.recipeForm.value.ingredients
+          ),
+        })
+      );
     }
     this.navAway();
   }

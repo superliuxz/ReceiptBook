@@ -1,9 +1,4 @@
-import {
-  animate,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -37,6 +32,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.recipesSub = this.store.select('recipes').subscribe(recipesState => {
+      console.log(recipesState.recipes.length);
       this.recipes = recipesState.recipes;
     });
   }

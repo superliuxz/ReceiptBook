@@ -13,6 +13,7 @@ const routes = [
     path: '', // Empty string becoz of lazy loading.
     canActivate: [AuthGuard],
     component: RecipesComponent,
+    resolve: [RecipesResolverService],
     children: [
       {
         path: '',
@@ -22,17 +23,14 @@ const routes = [
       {
         path: 'new',
         component: RecipeEditComponent,
-        resolve: [RecipesResolverService],
       },
       {
         path: ':recipeId',
         component: RecipeDetailComponent,
-        resolve: [RecipesResolverService],
       },
       {
         path: ':recipeId/edit',
         component: RecipeEditComponent,
-        resolve: [RecipesResolverService],
       },
     ],
   },

@@ -3,8 +3,8 @@
 ## TODOs:
 - [x] Keep the spinner after user being authenticated but before resolver load the data.
 - [ ] Make shopping-list persistent.
-- [ ] Remove the Manage dropdown and save items right away.
 - [ ] Redo README.
+- [ ] Dockerize runtime.
 
 ---
 

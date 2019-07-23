@@ -15,7 +15,7 @@ export class RecipesEffects {
     return this.actions.pipe(
       ofType(RecipesAction.fetchRecipes),
       switchMap(() => {
-        return this.http.get<Recipe[]>('http://localhost:12345/get-recipes', {withCredentials: true});
+        return this.http.get<Recipe[]>(AppConstants.firebaseUrl);
       }),
       map(recipes => {
         if (!recipes) {
@@ -44,9 +44,9 @@ export class RecipesEffects {
             storeRecipesAction,
             recipesState /* this arg comes from withLatestFrom */,
           ]) => {
-            return this.http.post(
-              'http://localhost:12345/recipe',
-              recipesState.recipes, {withCredentials: true}
+            return this.http.put(
+              AppConstants.firebaseUrl,
+              recipesState.recipes
             );
           }
         )

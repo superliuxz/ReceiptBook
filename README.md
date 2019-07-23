@@ -4,7 +4,7 @@
 - [x] Keep the spinner after user being authenticated but before resolver load the data.
 - [ ] Make shopping-list persistent.
 - [ ] Redo README.
-- [ ] Dockerize runtime.
+- [x] Dockerize runtime.
 
 ---
 

@@ -2,7 +2,7 @@
 A single page application built using Angular 8. 
 I used as many Angular features as I can to maximize my learning experience.
 
-Demo: http://35.212.254.27:10101/
+Demo: http://35.212.211.172:10101/
 
 #### Local development:
 - update ```environment.ts``` entries;

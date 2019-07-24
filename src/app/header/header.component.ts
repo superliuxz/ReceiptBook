@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { logout } from '../auth/store/auth.actions';
 import * as RecipesAction from '../recipes/store/recipes.actions';
+import * as ShoppingListAction from '../shopping-list/store/shopping-list.action';
 import { AppState } from '../store/app.reducer';
 
 @Component({
@@ -32,9 +33,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onSaveData() {
     this.store.dispatch(RecipesAction.storeRecipes());
+    console.log('?');
+    this.store.dispatch(ShoppingListAction.storeIngredients());
   }
 
   onFetchData() {
     this.store.dispatch(RecipesAction.fetchRecipes());
+    console.log('??');
+    this.store.dispatch(ShoppingListAction.fetchIngredients());
   }
 }

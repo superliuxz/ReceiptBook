@@ -15,6 +15,7 @@ import { AuthEffects } from './auth/store/auth.effects';
 import { HeaderComponent } from './header/header.component';
 import { RecipesEffects } from './recipes/store/recipes.effects';
 import { SharedModule } from './shared/shared.module';
+import { ShoppingListEffects } from './shopping-list/store/shopping-list.effects';
 import { appReducer } from './store/app.reducer';
 
 @NgModule({
@@ -25,7 +26,7 @@ import { appReducer } from './store/app.reducer';
     HttpClientModule,
     SharedModule,
     StoreModule.forRoot(appReducer),
-    EffectsModule.forRoot([AuthEffects, RecipesEffects]),
+    EffectsModule.forRoot([AuthEffects, RecipesEffects, ShoppingListEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     // AppRoutingModule MUST come after the RecipesModule and ShoppingListModule

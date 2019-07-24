@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
+import { Environment } from '@angular/compiler-cli/src/ngtsc/typecheck/src/environment';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 import { AppConstants } from '../../app-constants';
 import { AppState } from '../../store/app.reducer';
@@ -15,7 +17,7 @@ export class RecipesEffects {
     return this.actions.pipe(
       ofType(RecipesAction.fetchRecipes),
       switchMap(() => {
-        return this.http.get<Recipe[]>(AppConstants.firebaseUrl);
+        return this.http.get<Recipe[]>(environment.recipesUrl);
       }),
       map(recipes => {
         if (!recipes) {
@@ -44,10 +46,7 @@ export class RecipesEffects {
             storeRecipesAction,
             recipesState /* this arg comes from withLatestFrom */,
           ]) => {
-            return this.http.put(
-              AppConstants.firebaseUrl,
-              recipesState.recipes
-            );
+            return this.http.put(environment.recipesUrl, recipesState.recipes);
           }
         )
       );

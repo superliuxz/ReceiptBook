@@ -7,11 +7,9 @@ export interface ShoppingListState {
   ingredients: Ingredient[];
   editIndex: number;
 }
+
 const initialState: ShoppingListState = {
-  ingredients: [
-    new Ingredient('Chicken', 1),
-    new Ingredient('Cooking Wine', 2),
-  ],
+  ingredients: [],
   editIndex: -1,
 };
 
@@ -47,6 +45,10 @@ export function shoppingListReducer(
       ...state,
       editIndex: action.index,
     })),
-    on(ShoppingListActions.stopEdit, state => ({ ...state, editIndex: -1 }))
+    on(ShoppingListActions.stopEdit, state => ({ ...state, editIndex: -1 })),
+    on(ShoppingListActions.setIngredients, (state, action) => ({
+      ...state,
+      ingredients: action.ingredients,
+    }))
   )(shoppingListState, shoppingListAction);
 }

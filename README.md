@@ -5,7 +5,7 @@ I used as many Angular features as I can to maximize my learning experience.
 Demo: http://35.212.254.27:10101/
 
 #### Local development:
-- update ```AppConstants``` entries;
+- update ```environment.ts``` entries;
 - run ```ng serve```, and visit ```localhost:4200```;
 
 #### Deployment:
@@ -16,7 +16,8 @@ Demo: http://35.212.254.27:10101/
 
 #### TODOs:
 - [x] Keep the spinner after user being authenticated but before resolver load the data.
-- [ ] Make shopping-list persistent.
+- [x] Make shopping-list persistent.
+  - [x] Corresponding NgRx effects, new actions, new resolver.
 - [x] Redo README.
 - [x] Dockerize runtime.
 - [x] Google Cloud deployment.

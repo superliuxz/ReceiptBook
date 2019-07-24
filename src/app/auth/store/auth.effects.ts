@@ -6,6 +6,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 import { AppConstants } from '../../app-constants';
 import { RecipesResolverService } from '../../recipes/recipes-resolver.service';
@@ -40,9 +41,9 @@ export class AuthEffects {
       switchMap(action => {
         return this.http
           .post<AuthResponsePayload>(
-            AppConstants.firebaseEmailPasswordEndpoint +
+            environment.firebaseEmailPasswordEndpoint +
               'signupNewUser?key=' +
-              AppConstants.firebaseApiKey,
+              environment.authApiKey,
             {
               email: action.email,
               password: action.password,
@@ -67,9 +68,9 @@ export class AuthEffects {
       switchMap(action => {
         return this.http
           .post<AuthResponsePayload>(
-            AppConstants.firebaseEmailPasswordEndpoint +
+            environment.firebaseEmailPasswordEndpoint +
               'verifyPassword?key=' +
-              AppConstants.firebaseApiKey,
+              environment.authApiKey,
             {
               email: action.email,
               password: action.password,

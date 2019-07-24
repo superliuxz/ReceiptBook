@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { AuthGuard } from '../auth/auth.guard';
 import { SharedModule } from '../shared/shared.module';
 import { ShoppingEditComponent } from './shopping-edit/shopping-edit.component';
+import { ShoppingListResolverService } from './shopping-list-resolver.service';
 import { ShoppingListComponent } from './shopping-list.component';
 
 @NgModule({
@@ -16,6 +17,7 @@ import { ShoppingListComponent } from './shopping-list.component';
         path: '',
         canActivate: [AuthGuard],
         component: ShoppingListComponent,
+        resolve: [ShoppingListResolverService],
       },
     ]),
     SharedModule,

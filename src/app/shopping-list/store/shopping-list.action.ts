@@ -2,12 +2,13 @@ import { createAction, props } from '@ngrx/store';
 
 import { Ingredient } from '../../shared/ingredient.model';
 
+// In memory actions.
 export const addIngredient = createAction(
   '[Shopping List] ADD_INGREDIENT',
   props<{ ingredient: Ingredient }>()
 );
 export const addIngredients = createAction(
-  '[Shopping List] AGG_INGREDIENTS',
+  '[Shopping List] ADD_INGREDIENTS',
   props<{ ingredients: Ingredient[] }>()
 );
 export const updateIngredient = createAction(
@@ -22,3 +23,14 @@ export const startEdit = createAction(
   props<{ index: number }>()
 );
 export const stopEdit = createAction('[Shopping List] STOP_EDIT');
+// Actions that
+export const fetchIngredients = createAction(
+  '[Shopping List] FETCH_INGREDIENTS'
+);
+export const storeIngredients = createAction(
+  '[Shopping List] STORE_INGREDIENTS'
+);
+export const setIngredients = createAction(
+  '[Shopping List] SET_INGREDIENTS',
+  props<{ ingredients: Ingredient[] }>()
+);

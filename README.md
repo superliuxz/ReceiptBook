@@ -22,4 +22,4 @@ Demo: http://35.212.254.27:10101/
 - [x] Dockerize runtime.
 - [x] Google Cloud deployment.
 - [ ] Hook up CircleCI.
-- [ ] Move API keys in ```AppConstants``` to Google Cloud keystore.
+- [ ] Move API keys in ```environment.ts``` to Google Cloud keystore.

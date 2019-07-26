@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { fadeInFadeOut } from '../shared/animation';
 
 import { Ingredient } from '../shared/ingredient.model';
 import { AppState } from '../store/app.reducer';
@@ -9,6 +10,7 @@ import * as ShoppingListAction from './store/shopping-list.action';
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
+  animations: [fadeInFadeOut()],
 })
 export class ShoppingListComponent implements OnInit {
   ingredients: Observable<{ ingredients: Ingredient[] }>;

@@ -33,13 +33,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onSaveData() {
     this.store.dispatch(RecipesAction.storeRecipes());
-    console.log('?');
     this.store.dispatch(ShoppingListAction.storeIngredients());
   }
 
   onFetchData() {
     this.store.dispatch(RecipesAction.fetchRecipes());
-    console.log('??');
     this.store.dispatch(ShoppingListAction.fetchIngredients());
   }
 }

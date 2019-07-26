@@ -4,13 +4,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
+import { environment } from '../../../environments/environment';
 import { AppConstants } from '../../app-constants';
 import { RecipesResolverService } from '../../recipes/recipes-resolver.service';
-import { AuthService } from '../auth.service';
 import { UserModel } from '../user.model';
 import * as AuthActions from './auth.actions';
 
@@ -28,11 +28,11 @@ export interface AuthResponsePayload {
 export class AuthEffects {
   constructor(
     private actions: Actions,
-    private authSvc: AuthService,
     private recipesResolver: RecipesResolverService,
     private http: HttpClient,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private cookieSvc: CookieService
   ) {}
 
   authSignup = createEffect(() => {
@@ -91,7 +91,10 @@ export class AuthEffects {
     return this.actions.pipe(
       ofType(AuthActions.autoLogin),
       map(() => {
-        const user = JSON.parse(localStorage.getItem(AppConstants.userKey));
+        if (!this.cookieSvc.check(AppConstants.userKey)) {
+          return AuthActions.logout();
+        }
+        const user = JSON.parse(this.cookieSvc.get(AppConstants.userKey));
         if (!user) {
           return AuthActions.logout();
         }
@@ -106,7 +109,6 @@ export class AuthEffects {
         }
         const expDuration =
           new Date(user.tokenExpirationDate).getTime() - new Date().getTime();
-        this.authSvc.setLogoutTimer(expDuration);
         return AuthActions.authenticateSuccess({
           email: user.email,
           localId: user.localId,
@@ -123,8 +125,7 @@ export class AuthEffects {
       return this.actions.pipe(
         ofType(AuthActions.logout),
         tap(() => {
-          this.authSvc.clearLogoutTimer();
-          localStorage.removeItem(AppConstants.userKey);
+          this.cookieSvc.delete(AppConstants.userKey);
           this.router.navigate(['auth']);
         })
       );
@@ -186,8 +187,7 @@ export class AuthEffects {
       respData.idToken,
       newExpDate
     );
-    localStorage.setItem(AppConstants.userKey, JSON.stringify(user));
-    this.authSvc.setLogoutTimer(expDuration);
+    this.cookieSvc.set(AppConstants.userKey, JSON.stringify(user), newExpDate);
     return AuthActions.authenticateSuccess({
       email: respData.email,
       localId: respData.localId,

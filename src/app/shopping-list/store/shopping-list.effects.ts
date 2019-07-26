@@ -35,7 +35,6 @@ export class ShoppingListEffects {
         ofType(ShoppingListActions.storeIngredients),
         withLatestFrom(this.store.select('shoppingList')),
         switchMap(([storeIngredientsAction, shoppingListState]) => {
-          console.log('we here?');
           return this.http.put<Ingredient[]>(
             environment.ingredientsUrl,
             shoppingListState.ingredients

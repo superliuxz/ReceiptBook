@@ -21,5 +21,6 @@ Demo: http://35.212.211.172:10101/
 - [x] Redo README.
 - [x] Dockerize runtime.
 - [x] Google Cloud deployment.
+- [x] SSR is causing flickering when refresh page.
 - [ ] Hook up CircleCI.
 - [ ] Move API keys in ```environment.ts``` to Google Cloud keystore.

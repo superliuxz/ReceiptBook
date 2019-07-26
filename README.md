@@ -10,6 +10,7 @@ Demo: http://35.212.211.172:10101/
 
 #### Deployment:
 - The runtime environment is dockerized, hence it's free to deploy onto any cloud service provider.
+- Push image to Google Cloud: ```docker build . -t us.gcr.io/recipeapp-247619/recipe-book:latest && gcloud docker -- push us.gcr.io/recipeapp-247619/recipe-book```
 - The production port is `10101`, and only HTTP traffic is supported.
   - Once can set up a load-balancer to downgrade the external HTTPS traffic to HTTP, other than
     configuring Nginx. 
